@@ -13,6 +13,7 @@ import Login from '../Screens/Login';
 import Cadastro from '../Screens/Cadastro';
 import PagMantra from '../Screens/PagMantra';
 import MeuPerfil from '../Screens/MeuPerfil';
+import PagFrase from '../Screens/FrasedoDia';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -43,6 +44,7 @@ return(
         <Stack.Screen name='PagNutricao' component={Nutricao} options={{headerShown: false}}/>
         <Stack.Screen name='PagRemedio' component={Medicamentos} options={{headerShown: false}}/>
         <Stack.Screen name='PagMantra' component={PagMantra} options={{headerShown: false}}/>
+        <Stack.Screen name='PagFrase' component={PagFrase} options={{headerShown: false}}/>
     </Stack.Navigator>  
 </NavigationContainer>
 

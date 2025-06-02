@@ -5,7 +5,7 @@ import axios from 'axios';
 import styles from './styles'
 import Header from '../../Components/Header'
 
-export default function PagMantra() {
+export default function PagFrase() {
     const navigation = useNavigation();
     
     const [Frase, setFrase] = useState('');

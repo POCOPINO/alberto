@@ -55,15 +55,21 @@ export default StyleSheet.create({
         elevation: 4,
     },
 
-    buttonContent: {
-        flexDirection: 'row',
+    buttonView: {
         justifyContent: 'space-between',
-        alignItems: 'center',
-        paddingHorizontal: 10,
+        paddingHorizontal: '5%',
+    },
+    buttonContent:{
+        flexDirection: 'row',
+        justifyContent:'space-between',
+    },
+    buttonDescription:{
+        flexDirection: 'row',
+        alignItems:'flex-start',
     },
 
     text: {
-        fontSize: 16,
+        fontSize: 20,
         fontWeight: 'bold',
         color: '#fff',
     },
@@ -75,12 +81,13 @@ export default StyleSheet.create({
     },
 
     icon: {
-        marginLeft: 10,
+        marginLeft: '5%',
+        marginTop:'1%',
     },
 
     image: {
-        width: 40,
-        height: 40,
+        width: 30,
+        height: 30,
         marginRight: 10,
         resizeMode: 'contain',
     },

@@ -1,14 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { View, Image, FlatList, Alert, Pressable } from "react-native";
+import {
+  View,
+  Image,
+  FlatList,
+  Alert,
+  Pressable,
+  KeyboardAvoidingView,
+  Platform,
+  TextInput,
+  Text,
+} from "react-native";
 import * as ImagePicker from "expo-image-picker";
 import * as Notifications from "expo-notifications";
-import { Text, Button, TextInput } from "react-native-paper";
-import { useNavigation } from '@react-navigation/native';
+import Ionicons from "react-native-vector-icons/Ionicons";
+import { useNavigation } from "@react-navigation/native";
 import styles from './styles'
 import Header from '../../Components/Header'
+import { ScrollView } from "react-native-web";
 
 export default function Medicamentos() {
-  const navigation = useNavigation()
+  const navigation = useNavigation();
   const [image, setImage] = useState(null);
   const [interval, setInterval] = useState("");
   const [doses, setDoses] = useState([]);
@@ -16,21 +27,13 @@ export default function Medicamentos() {
 
   useEffect(() => {
     (async () => {
-      const { status: cameraStatus } =
-        await ImagePicker.requestCameraPermissionsAsync();
+      const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
       if (cameraStatus !== "granted") {
-        Alert.alert(
-          "Permissão necessária",
-          "Precisamos da sua permissão para acessar a câmera."
-        );
+        Alert.alert("Permissão necessária", "Precisamos da sua permissão para acessar a câmera.");
       }
-      const { status: notificationStatus } =
-        await Notifications.requestPermissionsAsync();
+      const { status: notificationStatus } = await Notifications.requestPermissionsAsync();
       if (notificationStatus !== "granted") {
-        Alert.alert(
-          "Permissão necessária",
-          "Ative as notificações para receber alertas sobre os remédios."
-        );
+        Alert.alert("Permissão necessária", "Ative as notificações para receber alertas sobre os remédios.");
       }
     })();
   }, []);
@@ -48,22 +51,18 @@ export default function Medicamentos() {
 
   function scheduleDose() {
     if (!interval || isNaN(interval) || interval <= 0 || !lastDose) {
-      Alert.alert(
-        "Erro",
-        "Informe um intervalo válido e selecione um horário inicial."
-      );
+      Alert.alert("Erro", "Informe um intervalo válido e selecione um horário inicial.");
       return;
     }
+
     const nextDose = new Date();
     const [hours, minutes] = lastDose.split(":").map(Number);
     nextDose.setHours(hours, minutes, 0);
     nextDose.setHours(nextDose.getHours() + parseInt(interval));
     setDoses([...doses, { horario: nextDose.toLocaleTimeString() }]);
     scheduleNotification(nextDose);
-    Alert.alert(
-      "Alerta definido",
-      `Próxima dose às ${nextDose.toLocaleTimeString()}`
-    );
+
+    Alert.alert("Alerta definido", `Próxima dose às ${nextDose.toLocaleTimeString()}`);
   }
 
   async function scheduleNotification(time) {
@@ -81,49 +80,52 @@ export default function Medicamentos() {
       
       <Header title='Medicamentos'/>
 
-    <View style={styles.app}>
-      <Button
-        style={styles.btn}
-        icon="camera"
-        mode="contained"
-        onPress={pickImage}
-      >
-        Tirar Foto
-      </Button>
-      {image && <Image source={{ uri: image }} style={styles.img} />}
+      <KeyboardAvoidingView behavior={Platform.OS === "ios" ? "padding" : "height"} style={styles.inner}>
+        <View style={styles.body}>
+          <Pressable style={styles.btn} onPress={pickImage}>
+            <Ionicons name="camera" size={20} color="#fff" />
+            <Text style={styles.btnText}> Tirar Foto do Remédio</Text>
+          </Pressable>
 
-      <TextInput
-        label="Intervalo entre doses (horas):"
-        style={styles.input}
-        keyboardType="numeric"
-        value={interval}
-        onChangeText={setInterval}
-      />
+          {image && <Image source={{ uri: image }} style={styles.img} />}
 
-      <TextInput
-        label="Última dose (HH:MM):"
-        style={styles.input}
-        onChangeText={setLastDose}
-        value={lastDose}
-      />
+          <TextInput
+            placeholder="Intervalo entre doses (horas)"
+            keyboardType="numeric"
+            value={interval}
+            onChangeText={setInterval}
+            style={styles.input}
+            placeholderTextColor="#888"
+          />
 
-      <Button
-        style={styles.btn}
-        icon="calendar"
-        mode="contained"
-        onPress={scheduleDose}
-      >
-        Agendar Alerta
-      </Button>
-      <Text style={styles.history}>Histórico de Doses:</Text>
-      <FlatList
-        data={doses}
-        keyExtractor={(item, index) => index.toString()}
-        renderItem={({ item }) => (
-          <Text style={styles.textItem}>{item.horario}</Text>
-        )}
-      />
-    </View>
+          <TextInput
+            placeholder="Última dose (HH:MM)"
+            value={lastDose}
+            onChangeText={setLastDose}
+            style={styles.input}
+            placeholderTextColor="#888"
+          />
+
+          <Pressable style={styles.btn} onPress={scheduleDose}>
+            <Ionicons name="calendar" size={20} color="#fff" />
+            <Text style={styles.btnText}> Agendar Alerta</Text>
+          </Pressable>
+
+          <Text style={styles.historyTitle}>Histórico de Doses</Text>
+
+          <FlatList
+            data={doses}
+            keyExtractor={(item, index) => index.toString()}
+            renderItem={({ item }) => (
+              <View style={styles.historyItem}>
+                <Ionicons name="alarm" size={18} color="#004f92" />
+                <Text style={styles.historyText}> Dose às {item.horario}</Text>
+              </View>
+            )}
+            contentContainerStyle={styles.historyList}
+          />
+        </View>
+      </KeyboardAvoidingView>
     </View>
   );
 }

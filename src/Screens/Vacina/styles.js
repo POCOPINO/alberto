@@ -6,7 +6,31 @@ export default StyleSheet.create({
     backgroundColor: '#f8f9fa',
   },
   content: {
-    paddingVertical: 20,
+    paddingVertical: 10,
+  },
+  filterContainer: {
+    paddingHorizontal: 20,
+    paddingTop: 10,
+    paddingBottom: 10,
+    marginTop:'5%',
+    backgroundColor: '#fff',
+    elevation: 2,
+  },
+  filterLabel: {
+    fontSize: 16,
+    color: '#004f92',
+    fontWeight: 'bold',
+    marginBottom: 5,
+  },
+  pickerWrapper: {
+    borderWidth: 1,
+    borderColor: '#004f92',
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  picker: {
+    height: 45,
+    color: '#004f92',
   },
   vaccineSection: {
     marginVertical: 20,
@@ -20,13 +44,13 @@ export default StyleSheet.create({
   },
   vaccine: {
     fontSize: 16,
-    fontWeight: 'normal',
     color: '#000',
     marginBottom: 5,
   },
   line: {
-    backgroundColor:'#708090',
-    height:2,
+    backgroundColor: '#708090',
+    height: 2,
+    marginHorizontal: 20,
   },
   bold: {
     fontWeight: 'bold',

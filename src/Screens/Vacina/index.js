@@ -1,69 +1,95 @@
 import { useNavigation } from '@react-navigation/native';
-import React from 'react';
-import { View, Text, ScrollView,Pressable } from 'react-native';
-import styles from './styles'
+import React, { useState } from 'react';
+import { View, Text, ScrollView, StyleSheet, Pressable } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import Header from '../../Components/Header'
+import styles from './styles'
 
 export default function Vacinas() {
-const navigation = useNavigation()
+  const navigation = useNavigation();
+  const [faixaSelecionada, setFaixaSelecionada] = useState('Todas');
+
+  const vacinasPorIdade = {
+    '0-6 meses': [
+      'Vacina BCG',
+      'Vacina Hepatite B',
+      'Vacina DTPa',
+      'Vacina Rotavírus',
+      'Vacina Pneumocócica',
+      'Vacina Poliomielite',
+    ],
+    '1 ano': [
+      'Vacina MMR (Sarampo, Caxumba e Rubéola)',
+      'Vacina DTP (Difteria, Tétano e Coqueluche)',
+      'Vacina Hepatite A',
+      'Vacina Varicela',
+      'Vacina Pneumocócica Reforço',
+    ],
+    '5 anos': [
+      'Vacina dT (Difteria e Tétano)',
+      'Vacina Poliomielite Reforço',
+      'Vacina MMR Reforço',
+      'Vacina Varicela Reforço',
+    ],
+    'Adultos (19+)': [
+      'Vacina Hepatite B (Dose de reforço)',
+      'Vacina dT (Difteria e Tétano)',
+      'Vacina Febre Amarela',
+      'Vacina Influenza',
+    ],
+    'Idosos (60+)': [
+      'Vacina Pneumocócica',
+      'Vacina Hepatite A',
+      'Vacina Herpes Zóster',
+      'Vacina Influenza',
+    ],
+  };
+
+  const faixasEtarias = ['Todas', ...Object.keys(vacinasPorIdade)];
+
+  const renderVacinas = () => {
+    return Object.entries(vacinasPorIdade)
+      .filter(([faixa]) => faixaSelecionada === 'Todas' || faixa === faixaSelecionada)
+      .map(([faixa, vacinas], index) => (
+        <View key={index}>
+          <View style={styles.vaccineSection}>
+            <Text style={styles.ageGroup}>{faixa}</Text>
+            {vacinas.map((v, i) => (
+              <Text key={i} style={styles.vaccine}>
+                - <Text style={styles.bold}>{v}</Text>
+              </Text>
+            ))}
+          </View>
+          <View style={styles.line} />
+        </View>
+      ));
+  };
 
   return (
     <View style={styles.container}>
-     
-       <Header title="Vacinas"/>
+      
+      <Header title='Vacinas'/>
 
-      {/* Conteúdo com as vacinas por idade */}
+      {/* Filtro por idade */}
+      <View style={styles.filterContainer}>
+        <Text style={styles.filterLabel}>Filtrar por faixa etária:</Text>
+        <View style={styles.pickerWrapper}>
+          <Picker
+            selectedValue={faixaSelecionada}
+            onValueChange={(itemValue) => setFaixaSelecionada(itemValue)}
+            style={styles.picker}
+            dropdownIconColor="#004f92"
+          >
+            {faixasEtarias.map((faixa, idx) => (
+              <Picker.Item key={idx} label={faixa} value={faixa} />
+            ))}
+          </Picker>
+        </View>
+      </View>
+
+      {/* Conteúdo filtrado */}
       <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.vaccineSection}>
-        <Text style={styles.ageGroup}>0-6 meses</Text>
-          <Text style={styles.vaccine}>- <Text style={styles.bold}>Vacina BCG</Text></Text>
-          <Text style={styles.vaccine}>- <Text style={styles.bold}>Vacina Hepatite B</Text></Text>
-          <Text style={styles.vaccine}>- <Text style={styles.bold}>Vacina DTPa</Text></Text>
-          <Text style={styles.vaccine}>- <Text style={styles.bold}>Vacina Rotavírus</Text></Text>
-          <Text style={styles.vaccine}>- <Text style={styles.bold}>Vacina Pneumocócica</Text></Text>
-          <Text style={styles.vaccine}>- <Text style={styles.bold}>Vacina Poliomielite</Text></Text>
-        </View>
-
-        <View style={styles.line}></View>
-
-        <View style={styles.vaccineSection}>
-          <Text style={styles.ageGroup}>1 ano</Text>
-          <Text style={styles.vaccine}>- <Text style={styles.bold}>Vacina MMR (Sarampo, Caxumba e Rubéola)</Text></Text>
-          <Text style={styles.vaccine}>- <Text style={styles.bold}>Vacina DTP (Difteria, Tétano e Coqueluche)</Text></Text>
-          <Text style={styles.vaccine}>- <Text style={styles.bold}>Vacina Hepatite A</Text></Text>
-          <Text style={styles.vaccine}>- <Text style={styles.bold}>Vacina Varicela</Text></Text>
-          <Text style={styles.vaccine}>- <Text style={styles.bold}>Vacina Pneumocócica Reforço</Text></Text>
-        </View>
-
-        <View style={styles.line}></View>
-
-        <View style={styles.vaccineSection}>
-          <Text style={styles.ageGroup}>5 anos</Text>
-          <Text style={styles.vaccine}>- <Text style={styles.bold}>Vacina dT (Difteria e Tétano)</Text></Text>
-          <Text style={styles.vaccine}>- <Text style={styles.bold}>Vacina Poliomielite Reforço</Text></Text>
-          <Text style={styles.vaccine}>- <Text style={styles.bold}>Vacina MMR Reforço</Text></Text>
-          <Text style={styles.vaccine}>- <Text style={styles.bold}>Vacina Varicela Reforço</Text></Text>
-        </View>
-
-        <View style={styles.line}></View>
-
-        <View style={styles.vaccineSection}>
-          <Text style={styles.ageGroup}>Adultos (19 anos em diante)</Text>
-          <Text style={styles.vaccine}>- <Text style={styles.bold}>Vacina Hepatite B (Dose de reforço)</Text></Text>
-          <Text style={styles.vaccine}>- <Text style={styles.bold}>Vacina dT (Difteria e Tétano)</Text></Text>
-          <Text style={styles.vaccine}>- <Text style={styles.bold}>Vacina Febre Amarela</Text></Text>
-          <Text style={styles.vaccine}>- <Text style={styles.bold}>Vacina Influenza</Text></Text>
-        </View>
-
-        <View style={styles.line}></View>
-
-        <View style={styles.vaccineSection}>
-          <Text style={styles.ageGroup}>Idosos (60 anos em diante)</Text>
-          <Text style={styles.vaccine}>- <Text style={styles.bold}>Vacina Pneumocócica</Text></Text>
-          <Text style={styles.vaccine}>- <Text style={styles.bold}>Vacina Hepatite A</Text></Text>
-          <Text style={styles.vaccine}>- <Text style={styles.bold}>Vacina Herpes Zóster</Text></Text>
-          <Text style={styles.vaccine}>- <Text style={styles.bold}>Vacina Influenza</Text></Text>
-        </View>
+        {renderVacinas()}
       </ScrollView>
     </View>
   );

@@ -34,9 +34,7 @@ return(
 <NavigationContainer>
     <Stack.Navigator>
         <Stack.Screen name='Login' component={Login} options={{headerShown: false}} />
-        <Stack.Screen name='CadastroTeste' component={Cadastro} options={{headerShown: false}}/>
-        <Stack.Screen name='Cadastro' component={CadastroUsuario} options={{headerShown: false}}/>
-
+        <Stack.Screen name='Cadastro' component={Cadastro} options={{headerShown: false}}/>
         {/*o home drawer precisa estar aqui para ele poder ser usado nos botões que levam diretamente para a Home*/}
         <Stack.Screen name="HomeDrawer" component={HomeDrawer} options={{headerShown: false}}/>
 

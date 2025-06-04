@@ -10,6 +10,8 @@ export default function CadastroUsuario() {
   const [genero, setGenero] = useState("");
   const [peso, setPeso] = useState("");
   const [altura, setAltura] = useState("");
+  const [userImg, setUserImg] = useState('https://cdn.pixabay.com/photo/2017/08/16/00/29/add-person-2646097_1280.png');
+  
 
   const enviarDados = async () => {
     if (!nome || !email || !senha) {
@@ -18,38 +20,47 @@ export default function CadastroUsuario() {
     }
   
     try {
-      console.log("Preparando para enviar dados...");
-      console.log("Dados a serem enviados:", {
-        nome,
-        email,
-        senha,
-        dataNasc,
-        genero,
-        peso: parseFloat(peso),
-        altura: parseFloat(altura),
-      });
+      const formData = new FormData();
+  
+      formData.append("nome", nome);
+      formData.append("email", email);
+      formData.append("senha", senha);
+      formData.append("dataNasc", dataNasc);
+      formData.append("genero", genero);
+      formData.append("peso", peso);
+      formData.append("altura", altura);
+  
+      // Processar a imagem, se necessário
+      if (userImg.startsWith("data:image")) {
+        const response = await fetch(userImg);
+        const blob = await response.blob();
+        const filename = `user_${Date.now()}.jpg`;
+        const file = new File([blob], filename, { type: blob.type });
+        formData.append("imgUser", file);
+      } else {
+        const uriParts = userImg.split("/");
+        const filename = uriParts[uriParts.length - 1];
+        const match = /\.(\w+)$/.exec(filename);
+        const fileType = match ? `image/${match[1]}` : "image/jpeg";
+  
+        formData.append("imgUser", {
+          uri: userImg,
+          name: filename,
+          type: fileType,
+        });
+      }
   
       const url = "http://localhost:8000/api/usuarios";
-      console.log("URL da requisição:", url);
   
-      const response = await axios.post(url, {
-        nome,
-        email,
-        senha,
-        dataNasc,
-        genero,
-        peso: parseFloat(peso),
-        altura: parseFloat(altura),
+      const response = await axios.post(url, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
   
-      console.log("Resposta do servidor:", {
-        status: response.status,
-        data: response.data,
-        headers: response.headers,
-      });
-  
+      console.log("Resposta do servidor:", response.data);
       Alert.alert("Sucesso", "Usuário cadastrado!");
-      
+  
       // Limpar formulário
       setNome("");
       setEmail("");
@@ -62,31 +73,27 @@ export default function CadastroUsuario() {
     } catch (error) {
       console.group("Erro na requisição");
       console.error("Mensagem de erro:", error.message);
-      
+  
       if (error.response) {
-        // O servidor respondeu com um status fora do range 2xx
         console.error("Status do erro:", error.response.status);
         console.error("Dados da resposta:", error.response.data);
-        console.error("Cabeçalhos da resposta:", error.response.headers);
       } else if (error.request) {
-        // A requisição foi feita mas nenhuma resposta foi recebida
         console.error("Requisição feita mas sem resposta:", error.request);
-        console.error("Configuração da requisição:", error.config);
       } else {
-        // Algum erro ocorreu durante a configuração da requisição
         console.error("Erro ao configurar a requisição:", error.message);
       }
-      
+  
       console.groupEnd();
-      
+  
       Alert.alert(
-        "Erro", 
-        error.response?.data?.message || 
-        error.message || 
+        "Erro",
+        error.response?.data?.message ||
+        error.message ||
         "Erro desconhecido ao cadastrar usuário."
       );
     }
   };
+  
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <TextInput

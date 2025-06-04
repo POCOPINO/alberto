@@ -17,29 +17,21 @@ import { useNavigation } from '@react-navigation/native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
-import styles from'./styles'
+import styles from './styles';
 
 export default function Cadastro() {
   const navigation = useNavigation();
   const [loading, setLoading] = useState(false);
-  const [formData, setFormData] = useState({
-    nomeUsuario: '',
-    emailUsuario: '',
-    senhaUsuario: '',
-    dataNascUsuario: '',
-    generoUsuario: '',
-    alturaUsuario: '',
-    pesoUsuario: ''
-  });
+  const [nome, setNome] = useState("");
+  const [email, setEmail] = useState("");
+  const [senha, setSenha] = useState("");
+  const [dataNasc, setDataNasc] = useState("");
+  const [genero, setGenero] = useState("");
+  const [peso, setPeso] = useState("");
+  const [altura, setAltura] = useState("");
   const [fotoUsuario, setFotoUsuario] = useState(null);
   const [erros, setErros] = useState({});
   const [touched, setTouched] = useState({});
-
-  const handleChange = (name, value) => {
-    setFormData(prev => ({ ...prev, [name]: value }));
-    if (!touched[name]) setTouched(prev => ({ ...prev, [name]: true }));
-    if (name === 'emailUsuario' && touched.emailUsuario) validarEmail(value);
-  };
 
   const selecionarImagem = async () => {
     try {
@@ -55,74 +47,44 @@ export default function Cadastro() {
         allowsEditing: true,
         aspect: [1, 1]
       });
+      
 
-      if (!resultado.cancelled) setFotoUsuario(resultado.uri);
+      if (!resultado.canceled) {setFotoUsuario(resultado.uri);
+        console.log(resultado.uri)
+      }
     } catch (error) {
       Alert.alert('Erro', 'Não foi possível selecionar a imagem');
     }
+    console.log
   };
 
-  const validarEmail = (email) => {
-    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!email) {
-      setErros(prev => ({ ...prev, emailUsuario: 'Email é obrigatório' }));
-      return false;
-    }
-    if (!regex.test(email)) {
-      setErros(prev => ({ ...prev, emailUsuario: 'Email inválido' }));
-      return false;
-    }
-    setErros(prev => ({ ...prev, emailUsuario: '' }));
-    return true;
-  };
-
-  const verificarEmailExistente = async (email) => {
-    try {
-      const response = await axios.get('http://localhost:8000/api/usuarios/verificar-email', {
-        params: { emailUsuario: email }
-      });
-      return response.data.existe;
-    } catch (error) {
-      console.error('Erro ao verificar email:', error);
-      return false;
-    }
-  };
-
-  const validarFormulario = async () => {
+  const validarFormulario = () => {
     const novosErros = {};
     let valido = true;
 
-    if (!formData.nomeUsuario.trim()) {
-      novosErros.nomeUsuario = 'Nome completo é obrigatório';
+    if (!nome.trim()) {
+      novosErros.nome = 'Nome completo é obrigatório';
       valido = false;
     }
 
-    if (!formData.emailUsuario.trim()) {
-      novosErros.emailUsuario = 'Email é obrigatório';
+    if (!email.trim()) {
+      novosErros.email = 'Email é obrigatório';
       valido = false;
-    } else if (!validarEmail(formData.emailUsuario)) {
-      valido = false;
-    } else {
-      const emailExiste = await verificarEmailExistente(formData.emailUsuario);
-      if (emailExiste) {
-        novosErros.emailUsuario = 'Este email já está cadastrado';
-        valido = false;
-      }
-    }
-
-    if (!formData.senhaUsuario.trim()) {
-      novosErros.senhaUsuario = 'Senha é obrigatória';
-      valido = false;
-    } else if (formData.senhaUsuario.length < 6) {
-      novosErros.senhaUsuario = 'Senha deve ter pelo menos 6 caracteres';
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      novosErros.email = 'Email inválido';
       valido = false;
     }
 
-    if (!formData.dataNascUsuario.trim()) {
-      novosErros.dataNascUsuario = 'Data de nascimento é obrigatória';
+    if (!senha.trim()) {
+      novosErros.senha = 'Senha é obrigatória';
       valido = false;
-    } else if (!/^\d{2}\/\d{2}\/\d{4}$/.test(formData.dataNascUsuario)) {
-      novosErros.dataNascUsuario = 'Use o formato DD/MM/AAAA';
+    } else if (senha.length < 6) {
+      novosErros.senha = 'Senha deve ter pelo menos 6 caracteres';
+      valido = false;
+    }
+
+    if (!dataNasc.trim()) {
+      novosErros.dataNasc = 'Data de nascimento é obrigatória';
       valido = false;
     }
 
@@ -130,62 +92,109 @@ export default function Cadastro() {
     return valido;
   };
 
-  const handleSubmit = async () => {
+  const enviarDados = async () => {
+    if (!nome || !email || !senha) {
+      Alert.alert("Erro", "Preencha pelo menos nome, email e senha.");
+      return;
+    }
+
+    if (!validarFormulario()) {
+      return;
+    }
+
     setLoading(true);
-    
+  
     try {
-      if (!await validarFormulario()) {
-        setLoading(false);
-        return;
-      }
-
-      const data = new FormData();
-      Object.keys(formData).forEach(key => {
-        if (formData[key]) data.append(key, formData[key]);
-      });
-
+      const formData = new FormData();
+  
+      formData.append("nome", nome);
+      formData.append("email", email);
+      formData.append("senha", senha);
+      formData.append("dataNasc", dataNasc);
+      formData.append("genero", genero);
+      formData.append("peso", peso);
+      formData.append("altura", altura);
+      
+  
+      // Processar a imagem, se necessário
       if (fotoUsuario) {
-        const filename = fotoUsuario.split('/').pop();
-        const match = /\.(\w+)$/.exec(filename);
-        const type = match ? `image/${match[1]}` : 'image/jpeg';
-
-        data.append('fotoUsuario', {
-          uri: fotoUsuario,
-          name: filename,
-          type
-        });
-      }
-
-      const response = await axios.post('http://localhost:8000/api/usuarios/cadastrar', data, {
-        headers: { 
-          'Content-Type': 'multipart/form-data',
-          'Accept': 'application/json'
+        if (fotoUsuario.startsWith("data:image")) {
+          const response = await fetch(fotoUsuario);
+          const blob = await response.blob();
+          const filename = `user_${Date.now()}.jpg`;
+          const file = new File([blob], filename, { type: blob.type });
+          formData.append("imgUser", file);
+        } else {
+          const uriParts = fotoUsuario.split("/");
+          const filename = uriParts[uriParts.length - 1];
+          const match = /\.(\w+)$/.exec(filename);
+          const fileType = match ? `image/${match[1]}` : "image/jpeg";
+    
+          formData.append("imgUser", {
+            uri: fotoUsuario,
+            name: filename,
+            type: fileType,
+          });
         }
+      }
+        // Depois de adicionar tudo no formData:
+  for (let pair of formData.entries()) {
+    console.log("FormData key:", pair[0]);
+    console.log("FormData value:", pair[1]);
+  }
+  
+      const url = "http://localhost:8000/api/usuarios";
+  
+      const response = await axios.post(url, formData, {
+        headers: {
+          "Content-Type": "multipart/form-data",
+        },
       });
-
-      if (response.data.sucesso) {
-        Alert.alert('Sucesso', response.data.mensagem, [
-          { text: 'OK', onPress: () => navigation.navigate('Login') }
-        ]);
-      } else {
-        throw new Error(response.data.mensagem || 'Erro ao cadastrar');
-      }
+  
+      console.log("Resposta do servidor:", response.data);
+      Alert.alert("Sucesso", "Usuário cadastrado!", [
+        { text: 'OK', onPress: () => navigation.navigate('Login') }
+      ]);
+  
+      // Limpar formulário
+      setNome("");
+      setEmail("");
+      setSenha("");
+      setDataNasc("");
+      setGenero("");
+      setPeso("");
+      setAltura("");
+      setFotoUsuario(null);
+  
     } catch (error) {
-      let mensagemErro = 'Erro ao cadastrar';
+      console.group("Erro na requisição");
+      console.error("Mensagem de erro:", error.message);
+  
       if (error.response) {
+        console.error("Status do erro:", error.response.status);
+        console.error("Dados da resposta:", error.response.data);
+        
         if (error.response.data.error === 'email_existente') {
-          setErros(prev => ({ ...prev, emailUsuario: error.response.data.mensagem }));
-          mensagemErro = error.response.data.mensagem;
-        } else if (error.response.status === 422) {
-          mensagemErro = error.response.data.mensagem || 'Dados inválidos';
+          setErros(prev => ({ ...prev, email: error.response.data.mensagem }));
         }
+      } else if (error.request) {
+        console.error("Requisição feita mas sem resposta:", error.request);
+      } else {
+        console.error("Erro ao configurar a requisição:", error.message);
       }
-      Alert.alert('Erro', mensagemErro);
+  
+      console.groupEnd();
+  
+      Alert.alert(
+        "Erro",
+        error.response?.data?.message ||
+        error.message ||
+        "Erro desconhecido ao cadastrar usuário."
+      );
     } finally {
       setLoading(false);
     }
   };
-
 
   return (
     <SafeAreaView style={styles.container}>
@@ -208,9 +217,6 @@ export default function Cadastro() {
                     <Text style={styles.photoText}>Adicionar foto</Text>
                   </View>
                 )}
-                {/* <View style={styles.photoEditBadge}>
-                  <Ionicons name="camera" size={16} color="#fff" />
-                </View> */}
               </Pressable>
             </View>
 
@@ -219,55 +225,52 @@ export default function Cadastro() {
             <View style={styles.formGroup}>
               <Text style={styles.label}>Nome completo</Text>
               <TextInput
-                style={[styles.input, erros.nomeUsuario && styles.inputError]}
+                style={[styles.input, erros.nome && styles.inputError]}
                 placeholder="Digite seu nome completo"
-                value={formData.nomeUsuario}
-                onChangeText={(text) => handleChange('nomeUsuario', text)}
-                onBlur={() => setTouched(prev => ({ ...prev, nomeUsuario: true }))}
+                value={nome}
+                onChangeText={setNome}
+                onBlur={() => setTouched(prev => ({ ...prev, nome: true }))}
               />
-              {erros.nomeUsuario && <Text style={styles.errorText}>{erros.nomeUsuario}</Text>}
+              {erros.nome && <Text style={styles.errorText}>{erros.nome}</Text>}
             </View>
 
             <View style={styles.formGroup}>
               <Text style={styles.label}>Email</Text>
               <TextInput
-                style={[styles.input, erros.emailUsuario && styles.inputError]}
+                style={[styles.input, erros.email && styles.inputError]}
                 placeholder="Digite seu email"
                 keyboardType="email-address"
                 autoCapitalize="none"
-                value={formData.emailUsuario}
-                onChangeText={(text) => handleChange('emailUsuario', text)}
-                onBlur={() => {
-                  setTouched(prev => ({ ...prev, emailUsuario: true }));
-                  validarEmail(formData.emailUsuario);
-                }}
+                value={email}
+                onChangeText={setEmail}
+                onBlur={() => setTouched(prev => ({ ...prev, email: true }))}
               />
-              {erros.emailUsuario && <Text style={styles.errorText}>{erros.emailUsuario}</Text>}
+              {erros.email && <Text style={styles.errorText}>{erros.email}</Text>}
             </View>
 
             <View style={styles.formGroup}>
               <Text style={styles.label}>Senha</Text>
               <TextInput
-                style={[styles.input, erros.senhaUsuario && styles.inputError]}
+                style={[styles.input, erros.senha && styles.inputError]}
                 placeholder="Crie uma senha segura"
                 secureTextEntry
-                value={formData.senhaUsuario}
-                onChangeText={(text) => handleChange('senhaUsuario', text)}
-                onBlur={() => setTouched(prev => ({ ...prev, senhaUsuario: true }))}
+                value={senha}
+                onChangeText={setSenha}
+                onBlur={() => setTouched(prev => ({ ...prev, senha: true }))}
               />
-              {erros.senhaUsuario && <Text style={styles.errorText}>{erros.senhaUsuario}</Text>}
+              {erros.senha && <Text style={styles.errorText}>{erros.senha}</Text>}
             </View>
 
             <View style={styles.formGroup}>
               <Text style={styles.label}>Data de Nascimento</Text>
               <TextInput
-                style={[styles.input, erros.dataNascUsuario && styles.inputError]}
+                style={[styles.input, erros.dataNasc && styles.inputError]}
                 placeholder="DD/MM/AAAA"
-                value={formData.dataNascUsuario}
-                onChangeText={(text) => handleChange('dataNascUsuario', text)}
-                onBlur={() => setTouched(prev => ({ ...prev, dataNascUsuario: true }))}
+                value={dataNasc}
+                onChangeText={setDataNasc}
+                onBlur={() => setTouched(prev => ({ ...prev, dataNasc: true }))}
               />
-              {erros.dataNascUsuario && <Text style={styles.errorText}>{erros.dataNascUsuario}</Text>}
+              {erros.dataNasc && <Text style={styles.errorText}>{erros.dataNasc}</Text>}
             </View>
 
             <View style={styles.formGroup}>
@@ -275,8 +278,8 @@ export default function Cadastro() {
               <TextInput
                 style={styles.input}
                 placeholder="Masculino, Feminino, Outro"
-                value={formData.generoUsuario}
-                onChangeText={(text) => handleChange('generoUsuario', text)}
+                value={genero}
+                onChangeText={setGenero}
               />
             </View>
 
@@ -286,8 +289,8 @@ export default function Cadastro() {
                 <TextInput
                   style={styles.input}
                   placeholder="Ex: 175"
-                  value={formData.alturaUsuario}
-                  onChangeText={(text) => handleChange('alturaUsuario', text)}
+                  value={altura}
+                  onChangeText={setAltura}
                   keyboardType="numeric"
                 />
               </View>
@@ -297,8 +300,8 @@ export default function Cadastro() {
                 <TextInput
                   style={styles.input}
                   placeholder="Ex: 68.5"
-                  value={formData.pesoUsuario}
-                  onChangeText={(text) => handleChange('pesoUsuario', text)}
+                  value={peso}
+                  onChangeText={setPeso}
                   keyboardType="numeric"
                 />
               </View>
@@ -306,7 +309,7 @@ export default function Cadastro() {
 
             <Pressable
               style={[styles.button, loading && styles.buttonDisabled]}
-              onPress={handleSubmit}
+              onPress={enviarDados}
               disabled={loading}
             >
               {loading ? (

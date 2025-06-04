@@ -41,7 +41,7 @@ export default function Cadastro() {
         return;
       }
 
-      const resultado = await ImagePicker.launchImageLibraryAsync({
+      let resultado = await ImagePicker.launchImageLibraryAsync({
         mediaTypes: ImagePicker.MediaTypeOptions.Images,
         quality: 0.8,
         allowsEditing: true,
@@ -49,8 +49,8 @@ export default function Cadastro() {
       });
       
 
-      if (!resultado.canceled) {setFotoUsuario(resultado.uri);
-        console.log(resultado.uri)
+      if (!resultado.canceled) {setFotoUsuario(resultado.assets[0].uri);
+        console.log(resultado.assets[0].uri)
       }
     } catch (error) {
       Alert.alert('Erro', 'Não foi possível selecionar a imagem');

@@ -14,6 +14,7 @@ import Cadastro from '../Screens/Cadastro';
 import PagMantra from '../Screens/PagMantra';
 import MeuPerfil from '../Screens/MeuPerfil';
 import PagFrase from '../Screens/FrasedoDia';
+import CadastroUsuario from '../Screens/Cadastro/cadastroteste';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -33,7 +34,8 @@ return(
 <NavigationContainer>
     <Stack.Navigator>
         <Stack.Screen name='Login' component={Login} options={{headerShown: false}} />
-        <Stack.Screen name='Cadastro' component={Cadastro} options={{headerShown: false}}/>
+        <Stack.Screen name='CadastroTeste' component={Cadastro} options={{headerShown: false}}/>
+        <Stack.Screen name='Cadastro' component={CadastroUsuario} options={{headerShown: false}}/>
 
         {/*o home drawer precisa estar aqui para ele poder ser usado nos botões que levam diretamente para a Home*/}
         <Stack.Screen name="HomeDrawer" component={HomeDrawer} options={{headerShown: false}}/>

@@ -14,7 +14,7 @@ export default function Home() {
         { name: 'PagRemedio', title: 'MEDICAMENTOS', description: 'Saiba mais sobre suas medicações', image: require('../../../assets/padraoIcon.png') },
         { name: 'PagMantra', title: 'SEUS MANTRAS', description: 'Mantras para você alcançar sua paz.', image: require('../../../assets/padraoIcon.png') },
         { name: 'PagFrase', title: 'FRASE DO DIA', description: 'Veja uma frase para motivar o seu dia.', image: require('../../../assets/padraoIcon.png') },
-        { name: 'Pag4', title: 'NOME PÁGINA', description: 'Descrição básica para esta página.', image: require('../../../assets/padraoIcon.png') },
+        { name: 'PagSono', title: 'DICAS DE SONO', description: 'Veja algumas dicas para pegar no sono.', image: require('../../../assets/padraoIcon.png') },
         { name: 'Pag5', title: 'NOME PÁGINA', description: 'Descrição básica para esta página.', image: require('../../../assets/padraoIcon.png') },
         { name: 'Pag6', title: 'NOME PÁGINA', description: 'Descrição básica para esta página.', image: require('../../../assets/padraoIcon.png') },
         { name: 'Pag7', title: 'NOME PÁGINA', description: 'Descrição básica para esta página.', image: require('../../../assets/padraoIcon.png') }

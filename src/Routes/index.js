@@ -14,6 +14,7 @@ import Cadastro from '../Screens/Cadastro';
 import PagMantra from '../Screens/PagMantra';
 import MeuPerfil from '../Screens/MeuPerfil';
 import PagFrase from '../Screens/FrasedoDia';
+import PagSono from '../Screens/DicasdeSono';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -38,6 +39,7 @@ return(
         {/*o home drawer precisa estar aqui para ele poder ser usado nos botões que levam diretamente para a Home*/}
 
         {/*telas acessadas pela home*/}
+        <Stack.Screen name='PagSono' component={PagSono} options={{headerShown: false}}/>
         <Stack.Screen name='PagVacina' component={Vacinas} options={{headerShown: false}}/>
         <Stack.Screen name='PagIMC' component={IMC} options={{headerShown: false}}/>
         <Stack.Screen name='PagNutricao' component={Nutricao} options={{headerShown: false}}/>

@@ -1,25 +1,28 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-    container: {
-    flex: 1,
-    backgroundColor: '#f8f9fa',
+    containerPai: {
+        flex: 1,
+        backgroundColor: '#f8f9fa',
     },
-    Frase: {
+    container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
-        padding: 20,
     },
-    resultado: {
-        padding: 20,
-        backgroundColor: '#f0f0f0',
-        borderRadius: 10,
+    Frase: {
+        flex: 0.3,
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     frase: {
-        fontSize: 20,
-        marginBottom: 10,
+        fontSize: 25,
         fontStyle: 'italic',
         textAlign: 'center',
+    }, 
+    titulo: {
+        fontSize: 30,
+        fontWeight: 'bold',
+        color: '#004f92',
     },
 });

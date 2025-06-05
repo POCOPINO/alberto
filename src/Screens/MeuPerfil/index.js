@@ -35,7 +35,7 @@ export default function MeuPerfil() {
       <View style={styles.profileSection}>
         <View style={styles.avatar}>
           <Image
-            source={{ uri: '../' }}
+            source={{ uri: `http://localhost:8000/${usuario?.imgUser}` }}
             style={styles.avatarImage}
           />
         </View>

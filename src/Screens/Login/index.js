@@ -33,23 +33,23 @@ export default function Login() {
         senha,
       });
 
+      console.log('Resposta completa:', response); // 🔍 Ver toda a resposta da API
+
       if (response.data.success) {
+        console.log('Usuário logado:', response.data.user); // 🎯 Ver dados do usuário logado
         Alert.alert('Sucesso', 'Login realizado!');
-
-        // Salva os dados do usuário localmente (opcional)
         await AsyncStorage.setItem('usuario', JSON.stringify(response.data.user));
-
-        // Navega para a tela principal
+        await AsyncStorage.setItem('logado', '1')
         navigation.navigate('HomeDrawer');
       } else {
+        console.log('Erro retornado pela API:', response.data); // ❌ Se a API respondeu com erro
         Alert.alert('Erro', response.data.error || 'Erro no login');
       }
     } catch (error) {
+      console.log('Erro de conexão ou exceção:', error); // 🚨 Captura erro geral
       Alert.alert('Erro', error.response?.data?.error || 'Erro ao conectar com o servidor');
-    } finally {
-      setLoading(false);
     }
-  };
+  }    
 
   return (
     <SafeAreaView style={styles.container}>
@@ -84,7 +84,7 @@ export default function Login() {
           <View style={styles.viewButton}>
             <Pressable
               style={styles.button}
-              onPress={login} // 👈 agora chama a função correta
+              onPress={login} 
               disabled={loading}
             >
               <Text style={styles.buttonText}>

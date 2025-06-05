@@ -15,6 +15,7 @@ import PagMantra from '../Screens/PagMantra';
 import MeuPerfil from '../Screens/MeuPerfil';
 import PagFrase from '../Screens/FrasedoDia';
 import PagSono from '../Screens/DicasdeSono';
+import Splash from '../Screens/splesh';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -33,6 +34,7 @@ export default function Routes (){
 return(
 <NavigationContainer>
     <Stack.Navigator>
+        <Stack.Screen name='Splesh' component={Splash} options={{headerShown: false}} />
         <Stack.Screen name="HomeDrawer" component={HomeDrawer} options={{headerShown: false}}/>
         <Stack.Screen name='Login' component={Login} options={{headerShown: false}} />
         <Stack.Screen name='Cadastro' component={Cadastro} options={{headerShown: false}}/>

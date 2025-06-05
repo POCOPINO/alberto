@@ -1,41 +1,64 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, ScrollView, Pressable } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import styles from'./styles'
-import Header from '../../Components/Header'
+import styles from './styles';
+import Header from '../../Components/Header';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export default function MeuPerfil(){
+export default function MeuPerfil() {
+  const [usuario, setUsuario] = useState(null);
+
+  useEffect(() => {
+    async function carregarUsuario() {
+      try {
+        const dados = await AsyncStorage.getItem('usuario');
+        if (dados) {
+          const usuarioObj = JSON.parse(dados);
+          setUsuario(usuarioObj);
+        }
+      } catch (erro) {
+        console.error('Erro ao carregar usuário:', erro);
+      }
+    }
+
+    carregarUsuario();
+  }, []);
+
   return (
     <ScrollView style={styles.container}>
+      <Header title='Meu Perfil' />
 
-        <Header title='Meu Perfil'/>
-
-      {/*fundo azul*/}
+      {/* fundo azul */}
       <View style={styles.header} />
 
-      {/*Nome Usuário e foto*/}
+      {/* Nome Usuário e foto */}
       <View style={styles.profileSection}>
         <View style={styles.avatar}>
           <Image
-            source={{ uri:'https://upload.wikimedia.org/wikipedia/commons/9/9e/Foto_oficial_de_Luiz_In%C3%A1cio_Lula_da_Silva_%28ombros%29_denoise.jpg' }}style={styles.avatarImage}/>
+            source={{ uri: '../' }}
+            style={styles.avatarImage}
+          />
         </View>
         <Pressable>
-            <TouchableOpacity>
-                <Text style={styles.editProfile}>Editar</Text>
-            </TouchableOpacity>
+          <TouchableOpacity>
+            <Text style={styles.editProfile}>Editar</Text>
+          </TouchableOpacity>
         </Pressable>
-        <Text style={styles.userName}>Edivan Guedes Araujo Junior</Text>
+
+        <Text style={styles.userName}>
+          {usuario ? usuario.nomeUser : 'Carregando...'}
+        </Text>
       </View>
 
       {/* Dados pessoais */}
       <View style={styles.section}>
         <Text style={styles.sectionTitle}>Dados pessoais</Text>
 
-        <InfoRow label="Nome" value="Edivan Guedes Araujo Junior" />
-        <InfoRow label="Data de nascimento" value="15/03/1990" />
-        <InfoRow label="Gênero" value="Masculino" />
-        <InfoRow label="Altura" value="1,78 m" />
-        <InfoRow label="Peso" value="78 kg" />
+        <InfoRow label="Nome" value={usuario?.nomeUser || '---'} />
+        <InfoRow label="Data de nascimento" value={usuario?.dataNascUser || '---'} />
+        <InfoRow label="Gênero" value={usuario?.generoUser || '---'} />
+        <InfoRow label="Altura" value={usuario?.alturaUser || '---'} />
+        <InfoRow label="Peso" value={usuario?.pesoUser || '---'} />
       </View>
     </ScrollView>
   );

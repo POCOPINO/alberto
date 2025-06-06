@@ -1,12 +1,36 @@
+import React, { useEffect, useState } from 'react';
 import { StatusBar } from 'expo-status-bar';
 import { useNavigation } from '@react-navigation/native';
 import { View, Text, Pressable, ScrollView, Image } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import styles from './styles'
+import FontAwesome from 'react-native-vector-icons/FontAwesome5';
+import styles from './styles';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import axios from 'axios';
+
+
+
+
 
 export default function Home() {
     const navigation = useNavigation();
-
+    const [usuario, setUsuario] = useState(null);
+    useEffect(() => {
+        
+        const carregarUsuario = async () => {
+            const id = await AsyncStorage.getItem('id');
+          try {
+            const response = await axios.post(`http://localhost:8000/api/user/selecionarUser/${id}`);
+            setUsuario(response.data.User);
+            const usuario = response.data.User;
+            console.log(usuario)
+          } catch (erro) {
+            console.error('Erro ao carregar usuário:', erro);
+          }
+        };
+    
+        carregarUsuario();
+      }, []);
     const pages = [
         { name: 'PagVacina', title: 'VACINAS', description: 'Verifique as vacinas que você deve tomar.', image: require('../../../assets/vacinaIcon.png') },
         { name: 'PagIMC', title: 'IMC', description: 'Calcule seu Índice de Massa Corporal.', image: require('../../../assets/imcIcon.png') },

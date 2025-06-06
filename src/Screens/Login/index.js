@@ -36,10 +36,12 @@ export default function Login() {
       console.log('Resposta completa:', response); // 🔍 Ver toda a resposta da API
 
       if (response.data.success) {
-        console.log('Usuário logado:', response.data.user); // 🎯 Ver dados do usuário logado
+        console.log('Usuário logado:', response.data.user);
+        const user =  response.data.user
         Alert.alert('Sucesso', 'Login realizado!');
         await AsyncStorage.setItem('usuario', JSON.stringify(response.data.user));
         await AsyncStorage.setItem('logado', '1')
+        await AsyncStorage.setItem('id', String(user.id));
         navigation.navigate('HomeDrawer');
       } else {
         console.log('Erro retornado pela API:', response.data); // ❌ Se a API respondeu com erro

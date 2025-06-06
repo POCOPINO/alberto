@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './styles';
 import Header from '../../Components/Header';
 
+
 export default function MeuPerfil() {
   const [usuario, setUsuario] = useState(null);
   const [campoAtual, setCampoAtual] = useState('');
@@ -56,18 +57,75 @@ export default function MeuPerfil() {
     { label: 'Peso', chave: 'pesoUser' },
   ];
 
+  const alterarImagem = async () => {
+    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+    if (permission.status !== 'granted') {
+      Alert.alert('Permissão negada', 'É necessário permitir acesso às fotos.');
+      return;
+    }
+  
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      quality: 1,
+    });
+  
+    if (!result.canceled) {
+      const fotoUsuario = result.assets[0].uri;
+      const uriParts = fotoUsuario.split('/');
+      const filename = uriParts[uriParts.length - 1];
+      const match = /\.(\w+)$/.exec(filename);
+      const fileType = match ? `image/${match[1]}` : 'image/jpeg';
+  
+      const formData = new FormData();
+      formData.append('imgUser', {
+        uri: fotoUsuario,
+        name: filename,
+        type: fileType,
+      });
+  
+      try {
+        const idUser = usuario.id;
+  
+        const response = await axios.post(
+          `http://localhost:8000/api/user/alterar-imagem/${idUser}`,
+          formData,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+          }
+        );
+  
+        const novaImagem = response.data.image_url;
+  
+        // Atualiza o usuário local
+        const usuarioAtualizado = { ...usuario, imgUser: novaImagem.replace('http://localhost:8000/', '') };
+        setUsuario(usuarioAtualizado);
+        await AsyncStorage.setItem('usuario', JSON.stringify(usuarioAtualizado));
+  
+        Alert.alert('Sucesso', 'Imagem de perfil atualizada!');
+      } catch (error) {
+        console.error('Erro ao enviar imagem:', error);
+        Alert.alert('Erro', 'Erro ao atualizar a imagem de perfil.');
+      }
+    }
+  };
+  
   return (
     <ScrollView style={styles.container}>
       <Header title='Meu Perfil' />
       <View style={styles.header} />
 
       <View style={styles.profileSection}>
-        <View style={styles.avatar}>
+        <TouchableOpacity onPress={alterarImagem} >
+          <View style={styles.avatar}>
           <Image
             source={{ uri: `http://localhost:8000/${usuario?.imgUser}` }}
             style={styles.avatarImage}
           />
         </View>
+        </TouchableOpacity>
         <Text style={styles.userName}>{usuario?.nomeUser || 'Carregando...'}</Text>
       </View>
 

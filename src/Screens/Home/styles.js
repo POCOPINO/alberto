@@ -19,12 +19,14 @@ export default StyleSheet.create({
         shadowOpacity: 0.2,
         shadowRadius: 4,
         elevation: 4,
+        
     },
 
     headerText: {
         fontSize: 24,
         fontWeight: 'bold',
         color: '#004f92',
+        marginRight: 20
     },
 
     menuButton: {

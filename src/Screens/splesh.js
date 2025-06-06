@@ -38,7 +38,7 @@ export default function Splash() {
         <Animatable.Image
           source={require("../../assets/alberto.png")}
           style={styles.logo}
- 
+          resizeMode='contain'
         />
       </Animatable.View>
     </View>

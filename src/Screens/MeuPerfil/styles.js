@@ -66,5 +66,50 @@ export default StyleSheet.create({
     fontWeight: '500',
     color: '#000',
     marginTop: 2,
+    
   },
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContent: {
+    width: '85%',
+    backgroundColor: '#fff',
+    borderRadius: 10,
+    padding: 20,
+    elevation: 5,
+  },
+  title: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 15,
+    color: '#333',
+  },
+  input: {
+    borderWidth: 1,
+    borderColor: '#ccc',
+    borderRadius: 8,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    fontSize: 16,
+    color: '#000',
+    marginBottom: 20,
+  },
+  buttonRow: {
+    flexDirection: 'row',
+    justifyContent: 'flex-end',
+    gap: 10,
+  },
+  button: {
+    backgroundColor: '#007bff',
+    borderRadius: 6,
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+  },
+  buttonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+  }
 });

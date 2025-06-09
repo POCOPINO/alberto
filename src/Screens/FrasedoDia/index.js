@@ -52,12 +52,12 @@ export default function PagFrase() {
         ) : (
             <>
                 <View style={styles.Frase}>
-                    <Text style={styles.titulo}>Frase do Dia</Text>
+                    <Text style={styles.titulo}>Frase dia</Text>
                     <Text style={styles.frase}>{fraseTraduzida}</Text>
                 </View>
 
                 <View style={styles.Frase}>
-                    <Text style={styles.titulo}>Frase Original</Text>
+                    <Text style={styles.titulo}>Frase original</Text>
                     <Text style={styles.frase}>{fraseOriginal}</Text>
                 </View>
             </>

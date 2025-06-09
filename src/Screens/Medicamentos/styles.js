@@ -67,7 +67,7 @@ export default StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    backgroundColor: '#17a2b8',
+    backgroundColor: '#004f92',
     padding: 6,
     borderRadius: 6,
     width: 36,

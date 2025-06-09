@@ -15,7 +15,7 @@ import PagMantra from '../Screens/PagMantra';
 import MeuPerfil from '../Screens/MeuPerfil';
 import PagFrase from '../Screens/FrasedoDia';
 import PagSono from '../Screens/DicasdeSono';
-import Splash from '../Screens/splesh';
+import Splash from '../Screens/Splash/splesh';
 import Glicemia from '../Screens/Glicose/index.';
 import Pressao from '../Screens/Pressao';
 
@@ -36,12 +36,12 @@ export default function Routes (){
 return(
 <NavigationContainer>
     <Stack.Navigator>
-        <Stack.Screen name="HomeDrawer" component={HomeDrawer} options={{headerShown: false}}/>
         <Stack.Screen name='Splesh' component={Splash} options={{headerShown: false}} />
+        
         <Stack.Screen name='Login' component={Login} options={{headerShown: false}} />
         <Stack.Screen name='Cadastro' component={Cadastro} options={{headerShown: false}}/>
         {/*o home drawer precisa estar aqui para ele poder ser usado nos botões que levam diretamente para a Home*/}
-
+        <Stack.Screen name="HomeDrawer" component={HomeDrawer} options={{headerShown: false}}/>
         {/*telas acessadas pela home*/}
         <Stack.Screen name='PagSono' component={PagSono} options={{headerShown: false}}/>
         <Stack.Screen name='PagVacina' component={Vacinas} options={{headerShown: false}}/>

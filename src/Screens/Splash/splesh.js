@@ -36,7 +36,7 @@ export default function Splash() {
         duration={1000}
       >
         <Animatable.Image
-          source={require("../../assets/alberto.png")}
+          source={require("../../../assets/alberto.png")}
           style={styles.logo}
           resizeMode='contain'
         />

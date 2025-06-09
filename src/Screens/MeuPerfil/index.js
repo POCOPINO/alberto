@@ -181,7 +181,7 @@ export default function MeuPerfil() {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.title}>Editar {campoAtual}</Text>
+            <Text style={styles.title}>Editarx</Text>
             <TextInput
               value={valorAtual}
               onChangeText={setValorAtual}

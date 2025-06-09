@@ -5,6 +5,7 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './styles';
 import Header from '../../Components/Header';
+import * as ImagePicker from 'expo-image-picker';
 
 
 export default function MeuPerfil() {
@@ -14,18 +15,21 @@ export default function MeuPerfil() {
   const [modalVisible, setModalVisible] = useState(false);
 
   useEffect(() => {
-    async function carregarUsuario() {
+        
+    const carregarUsuario = async () => {
+        const id = await AsyncStorage.getItem('id');
       try {
-        const dados = await AsyncStorage.getItem('usuario');
-        if (dados) {
-          setUsuario(JSON.parse(dados));
-        }
+        const response = await axios.post(`http://localhost:8000/api/user/selecionarUser/${id}`);
+        setUsuario(response.data.User);
+        const usuario = response.data.User;
+        console.log(usuario)
       } catch (erro) {
         console.error('Erro ao carregar usuário:', erro);
       }
-    }
+    };
+
     carregarUsuario();
-  }, []);
+  }, []);  
 
   const abrirModal = (campo, valor) => {
     setCampoAtual(campo);

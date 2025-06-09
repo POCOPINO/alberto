@@ -4,11 +4,13 @@ import { DrawerContentScrollView, DrawerItemList } from '@react-navigation/drawe
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { useNavigation } from '@react-navigation/native';
 import styles from './style'
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export default function CustomDrawer(props) {
   const navigation = useNavigation();
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    await AsyncStorage.clear();
     navigation.replace('Login');
   };
 

@@ -111,5 +111,10 @@ export default StyleSheet.create({
   buttonText: {
     color: '#fff',
     fontWeight: 'bold',
-  }
+  },
+  loadingContainer: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
 });

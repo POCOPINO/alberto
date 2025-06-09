@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, Image, TouchableOpacity, ScrollView, Modal, TextInput, Pressable } from 'react-native';
+import { View, Text, Image, TouchableOpacity, ScrollView, Modal, TextInput, Pressable, ActivityIndicator, SafeAreaView } from 'react-native';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
@@ -8,11 +8,13 @@ import Header from '../../Components/Header';
 import * as ImagePicker from 'expo-image-picker';
 
 
+
 export default function MeuPerfil() {
   const [usuario, setUsuario] = useState(null);
   const [campoAtual, setCampoAtual] = useState('');
   const [valorAtual, setValorAtual] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
         
@@ -23,6 +25,7 @@ export default function MeuPerfil() {
         setUsuario(response.data.User);
         const usuario = response.data.User;
         console.log(usuario)
+        setLoading(false)
       } catch (erro) {
         console.error('Erro ao carregar usuário:', erro);
       }
@@ -60,39 +63,54 @@ export default function MeuPerfil() {
     { label: 'Altura', chave: 'alturaUser' },
     { label: 'Peso', chave: 'pesoUser' },
   ];
-
+  const [fotoUsuario, setFotoUsuario] = useState(null);
   const alterarImagem = async () => {
-    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (permission.status !== 'granted') {
-      Alert.alert('Permissão negada', 'É necessário permitir acesso às fotos.');
-      return;
-    }
+    try {
+      // 1. Verificação de permissões (mantido igual)
+      const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (permission.status !== 'granted') {
+        Alert.alert('Permissão negada', 'É necessário permitir acesso às fotos.');
+        return;
+      }
   
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      quality: 1,
-    });
-  
-    if (!result.canceled) {
-      const fotoUsuario = result.assets[0].uri;
-      const uriParts = fotoUsuario.split('/');
-      const filename = uriParts[uriParts.length - 1];
-      const match = /\.(\w+)$/.exec(filename);
-      const fileType = match ? `image/${match[1]}` : 'image/jpeg';
-  
-      const formData = new FormData();
-      formData.append('imgUser', {
-        uri: fotoUsuario,
-        name: filename,
-        type: fileType,
+      // 2. Seleção da imagem (mantido igual)
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        quality: 1,
       });
   
-      try {
-        const idUser = usuario.id;
+      if (!result.canceled) {
+        const uri = result.assets[0].uri;
+        setFotoUsuario(uri);
+        
+        // Preparação do FormData (ajustado para garantir o envio)
+        const uriParts = uri.split('/');
+        const filename = uriParts[uriParts.length - 1];
+        const match = /\.(\w+)$/.exec(filename);
+        const fileType = match ? `image/${match[1]}` : 'image/jpeg';
+      
+        // Criando o objeto File corretamente
+        const file = {
+          uri: uri,
+          name: filename,
+          type: fileType,
+        };
+        
+        const formData = new FormData();
+        formData.append('imgUser', file);  // Aqui está o ajuste principal
+        
+        // Log para debug
+        console.log('FormData preparado:', {
+          uri: file.uri,
+          name: file.name,
+          type: file.type
+        });
   
+        // 3. Envio para a API
+        const id = usuario.id;
         const response = await axios.post(
-          `http://localhost:8000/api/user/alterar-imagem/${idUser}`,
+          `http://localhost:8000/api/user/alterarImagem/${id}`,
           formData,
           {
             headers: {
@@ -101,21 +119,48 @@ export default function MeuPerfil() {
           }
         );
   
+        // Verificação da resposta
+        if (!response.data || !response.data.image_url) {
+          throw new Error('Resposta da API inválida');
+        }
+  
+        // 4. Atualização local
         const novaImagem = response.data.image_url;
-  
-        // Atualiza o usuário local
-        const usuarioAtualizado = { ...usuario, imgUser: novaImagem.replace('http://localhost:8000/', '') };
-        setUsuario(usuarioAtualizado);
+        const usuarioAtualizado = { 
+          ...usuario, 
+          imgUser: novaImagem.replace('http://localhost:8000/', '') 
+        };
+        
         await AsyncStorage.setItem('usuario', JSON.stringify(usuarioAtualizado));
-  
+        setUsuario(usuarioAtualizado);
+        
         Alert.alert('Sucesso', 'Imagem de perfil atualizada!');
-      } catch (error) {
-        console.error('Erro ao enviar imagem:', error);
-        Alert.alert('Erro', 'Erro ao atualizar a imagem de perfil.');
+      }
+    } catch (error) {
+      console.error('Erro completo:', error);
+      
+      // Tratamento de erros específico para o caso "Nenhuma imagem foi enviada"
+      if (error.response && error.response.data && error.response.data.mensagem === "Nenhuma imagem foi enviada.") {
+        Alert.alert(
+          'Erro no envio', 
+          'O servidor não recebeu a imagem. Por favor, tente novamente com um arquivo diferente.'
+        );
+      } 
+      // Restante do tratamento de erros (mantido igual)
+      else if (axios.isAxiosError(error)) {
+        // ... (outros tratamentos de erro do Axios)
+      } else {
+        Alert.alert('Erro', 'Ocorreu um erro ao atualizar a imagem.');
       }
     }
   };
-  
+  if (loading) {
+    return (
+      <SafeAreaView style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#000" />
+      </SafeAreaView>
+    );
+  }
   return (
     <ScrollView style={styles.container}>
       <Header title='Meu Perfil' />

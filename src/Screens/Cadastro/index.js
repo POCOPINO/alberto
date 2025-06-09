@@ -18,6 +18,7 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import * as ImagePicker from "expo-image-picker";
 import axios from "axios";
 import styles from './styles';
+import { MaskedTextInput } from 'react-native-mask-text';
 
 export default function Cadastro() {
   const navigation = useNavigation();
@@ -263,13 +264,15 @@ export default function Cadastro() {
 
             <View style={styles.formGroup}>
               <Text style={styles.label}>Data de Nascimento</Text>
-              <TextInput
-                style={[styles.input, erros.dataNasc && styles.inputError]}
-                placeholder="DD/MM/AAAA"
-                value={dataNasc}
-                onChangeText={setDataNasc}
-                onBlur={() => setTouched(prev => ({ ...prev, dataNasc: true }))}
-              />
+              <MaskedTextInput
+                 mask="99/99/9999"
+              style={[styles.input, erros.dataNasc && styles.inputError]}
+               placeholder="DD/MM/AAAA"
+                    value={dataNasc}
+                    onChangeText={(text, rawText) => setDataNasc(text)}
+                         keyboardType="numeric"
+                    onBlur={() => setTouched(prev => ({ ...prev, dataNasc: true }))}
+/>
               {erros.dataNasc && <Text style={styles.errorText}>{erros.dataNasc}</Text>}
             </View>
 
@@ -286,7 +289,8 @@ export default function Cadastro() {
             <View style={styles.row}>
               <View style={[styles.formGroup, { flex: 1, marginRight: 10 }]}>
                 <Text style={styles.label}>Altura (cm)</Text>
-                <TextInput
+                <MaskedTextInput
+                  mask="999"
                   style={styles.input}
                   placeholder="Ex: 175"
                   value={altura}
@@ -297,7 +301,8 @@ export default function Cadastro() {
 
               <View style={[styles.formGroup, { flex: 1 }]}>
                 <Text style={styles.label}>Peso (kg)</Text>
-                <TextInput
+                <MaskedTextInput
+                  mask="99.9"
                   style={styles.input}
                   placeholder="Ex: 68.5"
                   value={peso}

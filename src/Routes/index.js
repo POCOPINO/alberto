@@ -16,6 +16,8 @@ import MeuPerfil from '../Screens/MeuPerfil';
 import PagFrase from '../Screens/FrasedoDia';
 import PagSono from '../Screens/DicasdeSono';
 import Splash from '../Screens/splesh';
+import Glicemia from '../Screens/Glicose/index.';
+import Pressao from '../Screens/Pressao';
 
 const Stack = createNativeStackNavigator();
 const Drawer = createDrawerNavigator();
@@ -34,8 +36,8 @@ export default function Routes (){
 return(
 <NavigationContainer>
     <Stack.Navigator>
-        <Stack.Screen name='Splesh' component={Splash} options={{headerShown: false}} />
         <Stack.Screen name="HomeDrawer" component={HomeDrawer} options={{headerShown: false}}/>
+        <Stack.Screen name='Splesh' component={Splash} options={{headerShown: false}} />
         <Stack.Screen name='Login' component={Login} options={{headerShown: false}} />
         <Stack.Screen name='Cadastro' component={Cadastro} options={{headerShown: false}}/>
         {/*o home drawer precisa estar aqui para ele poder ser usado nos botões que levam diretamente para a Home*/}
@@ -48,6 +50,8 @@ return(
         <Stack.Screen name='PagRemedio' component={Medicamentos} options={{headerShown: false}}/>
         <Stack.Screen name='PagMantra' component={PagMantra} options={{headerShown: false}}/>
         <Stack.Screen name='PagFrase' component={PagFrase} options={{headerShown: false}}/>
+        <Stack.Screen name='PagGlicemia' component={Glicemia} options={{headerShown: false}}/>
+        <Stack.Screen name='PagPressao' component={Pressao} options={{headerShown: false}}/>
     </Stack.Navigator>  
 </NavigationContainer>
 

@@ -39,9 +39,9 @@ export default function Home() {
         { name: 'PagMantra', title: 'SEUS MANTRAS', description: 'Mantras para você alcançar sua paz.', image: require('../../../assets/padraoIcon.png') },
         { name: 'PagFrase', title: 'FRASE DO DIA', description: 'Veja uma frase para motivar o seu dia.', image: require('../../../assets/padraoIcon.png') },
         { name: 'PagSono', title: 'DICAS DE SONO', description: 'Veja algumas dicas para pegar no sono.', image: require('../../../assets/padraoIcon.png') },
-        { name: 'Pag5', title: 'NOME PÁGINA', description: 'Descrição básica para esta página.', image: require('../../../assets/padraoIcon.png') },
-        { name: 'Pag6', title: 'NOME PÁGINA', description: 'Descrição básica para esta página.', image: require('../../../assets/padraoIcon.png') },
-        { name: 'Pag7', title: 'NOME PÁGINA', description: 'Descrição básica para esta página.', image: require('../../../assets/padraoIcon.png') }
+        { name: 'PagPressao', title: 'PRESSÃO', description: 'Anote sua pressão diariamente.', image: require('../../../assets/padraoIcon.png') },
+        { name: 'PagGlicemia', title: 'GLICEMIA', description: 'Fique atento aos níveis de açúcar.', image: require('../../../assets/padraoIcon.png') },
+        { name: 'PagLocal', title: 'CLÍNICAS PRÓXIMAS', description: 'Clínicas einstein mais próximas de você.', image: require('../../../assets/padraoIcon.png') }
     ];
 
     return (

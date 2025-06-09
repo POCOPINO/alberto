@@ -140,7 +140,7 @@ export default function MeuPerfil() {
   if (loading) {
     return (
       <SafeAreaView style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#000" />
+        <ActivityIndicator size="large" color="#004f92" />
       </SafeAreaView>
     );
   }

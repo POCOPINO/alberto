@@ -50,7 +50,7 @@ export default function Medicamentos() {
 
   const carregarMedicamentos = async () => {
     try {
-      const response = await axios.get('http://seu-servidor/api/medicamentos');
+      const response = await axios.get('');
       setMedicamentos(response.data);
     } catch (error) {
       console.error("Erro ao carregar medicamentos:", error);
@@ -114,7 +114,7 @@ export default function Medicamentos() {
         Alert.alert("Sucesso", "Medicamento atualizado com sucesso!");
       } else {
         // Criar novo medicamento
-        await axios.post('http://seu-servidor/api/medicamentos', formData, {
+        await axios.post('http://localhost:8000/api/medicamentos', formData, {
           headers: {
             'Content-Type': 'multipart/form-data',
           },

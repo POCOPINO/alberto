@@ -1,10 +1,15 @@
 import { StyleSheet } from 'react-native';
 
 export default StyleSheet.create({
+  containerPai: {
+    flex:1,
+    backgroundColor: '#f8f9fa',
+  },
   container: {
     flex: 1,
     padding: 20,
     backgroundColor: '#f8f9fa',
+    marginTop:'5%',
   },
   titulo: {
     fontSize: 22,

@@ -3,90 +3,11 @@ import { StyleSheet } from 'react-native';
 export default StyleSheet.create({
   container: {
     flex: 1,
+    padding: 20,
     backgroundColor: '#f8f9fa',
   },
-  addButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#004f92',
-    padding: 12,
-    margin: 16,
-    borderRadius: 8,
-    elevation: 3,
-  },
-  addButtonText: {
-    color: '#fff',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginLeft: 8,
-  },
-  listContainer: {
-    paddingHorizontal: 16,
-    paddingBottom: 20,
-  },
-  medicamentoCard: {
-    flexDirection: 'row',
-    backgroundColor: '#fff',
-    borderRadius: 10,
-    padding: 12,
-    marginBottom: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
-  },
-  medicamentoImage: {
-    width: 80,
-    height: 80,
-    borderRadius: 8,
-    marginRight: 12,
-  },
-  medicamentoInfo: {
-    flex: 1,
-    justifyContent: 'center',
-  },
-  medicamentoNome: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 4,
-  },
-  medicamentoIntervalo: {
-    fontSize: 14,
-    color: '#666',
-    marginBottom: 8,
-  },
-  actionsContainer: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: 120,
-  },
-  actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    backgroundColor: '#004f92',
-    padding: 6,
-    borderRadius: 6,
-    width: 36,
-    height: 36,
-  },
-  modalContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: 'rgba(0,0,0,0.5)',
-  },
-  modalContent: {
-    backgroundColor: '#fff',
-    width: '90%',
-    borderRadius: 12,
-    padding: 20,
-  },
-  modalTitle: {
-    fontSize: 20,
+  titulo: {
+    fontSize: 22,
     fontWeight: 'bold',
     color: '#333',
     marginBottom: 20,
@@ -100,80 +21,46 @@ export default StyleSheet.create({
     marginBottom: 16,
     fontSize: 16,
     color: '#333',
+    backgroundColor: '#fff',
   },
-  imageButtonsContainer: {
+  botoesImagemContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     marginBottom: 16,
   },
-  imageButton: {
+  botaoImagem: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#6c757d',
-    padding: 10,
+    padding: 12,
     borderRadius: 8,
     width: '48%',
   },
-  imageButtonText: {
+  textoBotaoImagem: {
     color: '#fff',
     marginLeft: 8,
   },
-  previewImage: {
+  imagemPreview: {
     width: '100%',
-    height: 150,
+    height: 200,
     borderRadius: 8,
     marginBottom: 16,
+    resizeMode: 'contain',
+    backgroundColor: '#eee',
   },
-  modalButtons: {
+  botaoCadastrar: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
-  },
-  modalButton: {
-    padding: 12,
-    borderRadius: 8,
-    width: '48%',
     alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: '#28a745',
+    padding: 15,
+    borderRadius: 8,
   },
-  modalButtonText: {
+  textoBotaoCadastrar: {
     color: '#fff',
     fontWeight: 'bold',
-  },
-  scheduleSection: {
-    padding: 16,
-    borderTopWidth: 1,
-    borderTopColor: '#eee',
-  },
-  sectionTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: '#333',
-    marginBottom: 12,
-  },
-  scheduleInput: {
-    borderWidth: 1,
-    borderColor: '#ddd',
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    color: '#333',
-  },
-  historySection: {
-    padding: 16,
-  },
-  historyItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 8,
-  },
-  historyText: {
     marginLeft: 8,
-    color: '#333',
-  },
-  historyList: {
-    paddingBottom: 20,
+    fontSize: 16,
   },
 });

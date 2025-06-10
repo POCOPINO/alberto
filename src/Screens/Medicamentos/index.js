@@ -1,372 +1,195 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   View,
   Image,
-  FlatList,
   Alert,
-  Pressable,
-  KeyboardAvoidingView,
-  Platform,
   TextInput,
   Text,
-  Modal,
-  TouchableOpacity
+  TouchableOpacity,
+  ActivityIndicator
 } from "react-native";
 import * as ImagePicker from "expo-image-picker";
-import * as Notifications from "expo-notifications";
 import Ionicons from "react-native-vector-icons/Ionicons";
-import { useNavigation } from "@react-navigation/native";
 import axios from "axios";
 import styles from './styles';
-import Header from '../../Components/Header';
 
-export default function Medicamentos() {
-  const navigation = useNavigation();
-  const [image, setImage] = useState(null);
+export default function CadastroRemedio() {
   const [nomeRemedio, setNomeRemedio] = useState("");
   const [intervalo, setIntervalo] = useState("");
-  const [doses, setDoses] = useState([]);
-  const [medicamentos, setMedicamentos] = useState([]);
-  const [modalVisible, setModalVisible] = useState(false);
-  const [editingId, setEditingId] = useState(null);
-  const [lastDose, setLastDose] = useState("");
+  const [imagem, setImagem] = useState(null);
+  const [carregando, setCarregando] = useState(false);
 
-  // Carrega medicamentos ao iniciar
-  useEffect(() => {
-    carregarMedicamentos();
-    solicitarPermissoes();
-  }, []);
-
-  const solicitarPermissoes = async () => {
-    const { status: cameraStatus } = await ImagePicker.requestCameraPermissionsAsync();
-    if (cameraStatus !== "granted") {
-      Alert.alert("Permissão necessária", "Precisamos da sua permissão para acessar a câmera.");
-    }
-    const { status: notificationStatus } = await Notifications.requestPermissionsAsync();
-    if (notificationStatus !== "granted") {
-      Alert.alert("Permissão necessária", "Ative as notificações para receber alertas sobre os remédios.");
-    }
-  };
-
-  const carregarMedicamentos = async () => {
+  const selecionarImagem = async () => {
     try {
-      const response = await axios.get('');
-      setMedicamentos(response.data);
+      const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (permission.status !== 'granted') {
+        Alert.alert('Permissão negada', 'É necessário permitir acesso às fotos.');
+        return;
+      }
+  
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+  
+      if (!result.canceled) {
+        setImagem(result.assets[0].uri);
+      }
     } catch (error) {
-      console.error("Erro ao carregar medicamentos:", error);
-      Alert.alert("Erro", "Não foi possível carregar os medicamentos.");
+      console.error("Erro ao selecionar imagem:", error);
+      Alert.alert("Erro", "Não foi possível selecionar a imagem.");
     }
   };
 
-  const pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-    
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
+  const tirarFoto = async () => {
+    try {
+      const permission = await ImagePicker.requestCameraPermissionsAsync();
+      if (permission.status !== 'granted') {
+        Alert.alert('Permissão negada', 'É necessário permitir acesso à câmera.');
+        return;
+      }
+  
+      const result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 1,
+      });
+  
+      if (!result.canceled) {
+        setImagem(result.assets[0].uri);
+      }
+    } catch (error) {
+      console.error("Erro ao tirar foto:", error);
+      Alert.alert("Erro", "Não foi possível tirar a foto.");
     }
   };
 
-  const takePhoto = async () => {
-    let result = await ImagePicker.launchCameraAsync({
-      allowsEditing: true,
-      aspect: [4, 3],
-      quality: 1,
-    });
-    
-    if (!result.canceled) {
-      setImage(result.assets[0].uri);
-    }
-  };
-
-  const salvarMedicamento = async () => {
-    if (!nomeRemedio || !intervalo || !image) {
+  const cadastrarRemedio = async () => {
+    if (!nomeRemedio || !intervalo || !imagem) {
       Alert.alert("Atenção", "Preencha todos os campos e adicione uma imagem.");
       return;
     }
 
+    setCarregando(true);
+
     try {
       const formData = new FormData();
-      const uriParts = image.split('/');
+      
+      // Adiciona os dados do remédio
+      formData.append('nomeRemedio', nomeRemedio);
+      formData.append('intervalo', intervalo);
+      
+      // Prepara a imagem para envio
+      const uriParts = imagem.split('/');
       const filename = uriParts[uriParts.length - 1];
       const match = /\.(\w+)$/.exec(filename);
       const fileType = match ? `image/${match[1]}` : 'image/jpeg';
 
-      // Converter para blob para enviar corretamente
-      const response = await fetch(image);
+      // Converte a URI para blob (melhor compatibilidade com Laravel)
+      const response = await fetch(imagem);
       const blob = await response.blob();
       
-      formData.append('nomeRemedio', nomeRemedio);
-      formData.append('intervalo', intervalo);
+      // Adiciona a imagem ao FormData
       formData.append('imgRemedio', blob, filename);
 
-      if (editingId) {
-        // Atualizar medicamento existente
-        await axios.put(`http://seu-servidor/api/medicamentos/${editingId}`, formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        Alert.alert("Sucesso", "Medicamento atualizado com sucesso!");
-      } else {
-        // Criar novo medicamento
-        await axios.post('http://localhost:8000/api/medicamentos', formData, {
-          headers: {
-            'Content-Type': 'multipart/form-data',
-          },
-        });
-        Alert.alert("Sucesso", "Medicamento cadastrado com sucesso!");
-      }
+      // Configuração do Axios
+      const config = {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+          'Accept': 'application/json'
+        }
+      };
 
-      // Limpar campos e recarregar lista
+      // Envia para o backend
+      await axios.post('http://localhost:8000/api/medicamentos', formData, config);
+      
+      // Limpa o formulário após cadastro
       setNomeRemedio("");
       setIntervalo("");
-      setImage(null);
-      setEditingId(null);
-      setModalVisible(false);
-      carregarMedicamentos();
+      setImagem(null);
+      
+      Alert.alert("Sucesso", "Medicamento cadastrado com sucesso!");
       
     } catch (error) {
-      console.error("Erro ao salvar medicamento:", error);
-      Alert.alert("Erro", "Não foi possível salvar o medicamento.");
-    }
-  };
-
-  const editarMedicamento = (medicamento) => {
-    setNomeRemedio(medicamento.nomeRemedio);
-    setIntervalo(medicamento.intervalo.toString());
-    setImage(medicamento.imgRemedio);
-    setEditingId(medicamento.id);
-    setModalVisible(true);
-  };
-
-  const deletarMedicamento = async (id) => {
-    Alert.alert(
-      "Confirmar",
-      "Tem certeza que deseja excluir este medicamento?",
-      [
-        { text: "Cancelar", style: "cancel" },
-        { 
-          text: "Excluir", 
-          onPress: async () => {
-            try {
-              await axios.delete(`http://seu-servidor/api/medicamentos/${id}`);
-              carregarMedicamentos();
-              Alert.alert("Sucesso", "Medicamento excluído com sucesso!");
-            } catch (error) {
-              console.error("Erro ao excluir medicamento:", error);
-              Alert.alert("Erro", "Não foi possível excluir o medicamento.");
-            }
-          } 
+      console.error("Erro ao cadastrar medicamento:", error);
+      
+      let errorMessage = "Não foi possível cadastrar o medicamento.";
+      if (error.response) {
+        if (error.response.data && error.response.data.message) {
+          errorMessage = error.response.data.message;
+        } else if (error.response.status === 422) {
+          errorMessage = "Dados inválidos. Verifique os campos.";
         }
-      ]
-    );
-  };
-
-  const agendarDose = (medicamento) => {
-    if (!lastDose) {
-      Alert.alert("Atenção", "Informe o horário da última dose.");
-      return;
+      }
+      
+      Alert.alert("Erro", errorMessage);
+    } finally {
+      setCarregando(false);
     }
-
-    const proximaDose = new Date();
-    const [hours, minutes] = lastDose.split(":").map(Number);
-    proximaDose.setHours(hours, minutes, 0);
-    proximaDose.setHours(proximaDose.getHours() + parseInt(medicamento.intervalo));
-    
-    setDoses([...doses, { 
-      horario: proximaDose.toLocaleTimeString(),
-      remedio: medicamento.nomeRemedio 
-    }]);
-    
-    agendarNotificacao(proximaDose, medicamento.nomeRemedio);
-    Alert.alert("Alerta definido", `Próxima dose de ${medicamento.nomeRemedio} às ${proximaDose.toLocaleTimeString()}`);
-  };
-
-  const agendarNotificacao = async (time, nomeRemedio) => {
-    await Notifications.scheduleNotificationAsync({
-      content: {
-        title: "Hora do remédio!",
-        body: `Está na hora de tomar ${nomeRemedio}`,
-        sound: true,
-        priority: Notifications.AndroidNotificationPriority.HIGH,
-      },
-      trigger: { seconds: (time - new Date()) / 1000 },
-    });
   };
 
   return (
     <View style={styles.container}>
-      <Header title='Meus Medicamentos' showBackButton={false} />
+      <Text style={styles.titulo}>Cadastro de Medicamento</Text>
       
-      {/* Botão para adicionar novo medicamento */}
-      <TouchableOpacity 
-        style={styles.addButton}
-        onPress={() => {
-          setEditingId(null);
-          setModalVisible(true);
-        }}
-      >
-        <Ionicons name="add-circle" size={24} color="#fff" />
-        <Text style={styles.addButtonText}> Adicionar Medicamento</Text>
-      </TouchableOpacity>
-
-      {/* Lista de medicamentos */}
-      <FlatList
-        data={medicamentos}
-        keyExtractor={(item) => item.id.toString()}
-        renderItem={({ item }) => (
-          <View style={styles.medicamentoCard}>
-            <Image 
-              source={{ uri: item.imgRemedio }} 
-              style={styles.medicamentoImage} 
-            />
-            
-            <View style={styles.medicamentoInfo}>
-              <Text style={styles.medicamentoNome}>{item.nomeRemedio}</Text>
-              <Text style={styles.medicamentoIntervalo}>
-                Intervalo: {item.intervalo} horas
-              </Text>
-              
-              <View style={styles.actionsContainer}>
-                <TouchableOpacity 
-                  style={styles.actionButton}
-                  onPress={() => editarMedicamento(item)}
-                >
-                  <Ionicons name="pencil" size={18} color="#fff" />
-                </TouchableOpacity>
-                
-                <TouchableOpacity 
-                  style={[styles.actionButton, { backgroundColor: '#dc3545' }]}
-                  onPress={() => deletarMedicamento(item.id)}
-                >
-                  <Ionicons name="trash" size={18} color="#fff" />
-                </TouchableOpacity>
-                
-                <TouchableOpacity 
-                  style={[styles.actionButton, { backgroundColor: '#28a745' }]}
-                  onPress={() => agendarDose(item)}
-                >
-                  <Ionicons name="alarm" size={18} color="#fff" />
-                </TouchableOpacity>
-              </View>
-            </View>
-          </View>
-        )}
-        contentContainerStyle={styles.listContainer}
+      <TextInput
+        placeholder="Nome do Medicamento"
+        value={nomeRemedio}
+        onChangeText={setNomeRemedio}
+        style={styles.input}
+        placeholderTextColor="#999"
       />
-
-      {/* Modal para adicionar/editar medicamento */}
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-        onRequestClose={() => setModalVisible(false)}
-      >
-        <View style={styles.modalContainer}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>
-              {editingId ? "Editar Medicamento" : "Novo Medicamento"}
-            </Text>
-            
-            <TextInput
-              placeholder="Nome do Medicamento"
-              value={nomeRemedio}
-              onChangeText={setNomeRemedio}
-              style={styles.input}
-              placeholderTextColor="#999"
-            />
-            
-            <TextInput
-              placeholder="Intervalo entre doses (horas)"
-              keyboardType="numeric"
-              value={intervalo}
-              onChangeText={setIntervalo}
-              style={styles.input}
-              placeholderTextColor="#999"
-            />
-            
-            <View style={styles.imageButtonsContainer}>
-              <TouchableOpacity 
-                style={styles.imageButton}
-                onPress={takePhoto}
-              >
-                <Ionicons name="camera" size={20} color="#fff" />
-                <Text style={styles.imageButtonText}> Tirar Foto</Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity 
-                style={styles.imageButton}
-                onPress={pickImage}
-              >
-                <Ionicons name="image" size={20} color="#fff" />
-                <Text style={styles.imageButtonText}> Escolher da Galeria</Text>
-              </TouchableOpacity>
-            </View>
-            
-            {image && (
-              <Image 
-                source={{ uri: image }} 
-                style={styles.previewImage} 
-              />
-            )}
-            
-            <View style={styles.modalButtons}>
-              <TouchableOpacity 
-                style={[styles.modalButton, { backgroundColor: '#6c757d' }]}
-                onPress={() => setModalVisible(false)}
-              >
-                <Text style={styles.modalButtonText}>Cancelar</Text>
-              </TouchableOpacity>
-              
-              <TouchableOpacity 
-                style={[styles.modalButton, { backgroundColor: '#007bff' }]}
-                onPress={salvarMedicamento}
-              >
-                <Text style={styles.modalButtonText}>Salvar</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      {/* Seção para agendar doses */}
-      <View style={styles.scheduleSection}>
-        <Text style={styles.sectionTitle}>Agendar Próxima Dose</Text>
+      
+      <TextInput
+        placeholder="Intervalo entre doses (horas)"
+        keyboardType="numeric"
+        value={intervalo}
+        onChangeText={setIntervalo}
+        style={styles.input}
+        placeholderTextColor="#999"
+      />
+      
+      <View style={styles.botoesImagemContainer}>
+        <TouchableOpacity 
+          style={styles.botaoImagem}
+          onPress={tirarFoto}
+        >
+          <Ionicons name="camera" size={20} color="#fff" />
+          <Text style={styles.textoBotaoImagem}> Tirar Foto</Text>
+        </TouchableOpacity>
         
-        <TextInput
-          placeholder="Última dose (HH:MM)"
-          value={lastDose}
-          onChangeText={setLastDose}
-          style={styles.scheduleInput}
-          placeholderTextColor="#999"
-        />
+        <TouchableOpacity 
+          style={styles.botaoImagem}
+          onPress={selecionarImagem}
+        >
+          <Ionicons name="image" size={20} color="#fff" />
+          <Text style={styles.textoBotaoImagem}> Escolher da Galeria</Text>
+        </TouchableOpacity>
       </View>
-
-      {/* Histórico de doses */}
-      {doses.length > 0 && (
-        <View style={styles.historySection}>
-          <Text style={styles.sectionTitle}>Histórico de Doses</Text>
-          
-          <FlatList
-            data={doses}
-            keyExtractor={(item, index) => index.toString()}
-            renderItem={({ item }) => (
-              <View style={styles.historyItem}>
-                <Ionicons name="time" size={18} color="#004f92" />
-                <Text style={styles.historyText}>
-                  {item.remedio} às {item.horario}
-                </Text>
-              </View>
-            )}
-            contentContainerStyle={styles.historyList}
-          />
-        </View>
+      
+      {imagem && (
+        <Image 
+          source={{ uri: imagem }} 
+          style={styles.imagemPreview} 
+        />
       )}
+      
+      <TouchableOpacity 
+        style={styles.botaoCadastrar}
+        onPress={cadastrarRemedio}
+        disabled={carregando}
+      >
+        {carregando ? (
+          <ActivityIndicator color="#fff" />
+        ) : (
+          <>
+            <Ionicons name="save" size={20} color="#fff" />
+            <Text style={styles.textoBotaoCadastrar}> Cadastrar Medicamento</Text>
+          </>
+        )}
+      </TouchableOpacity>
     </View>
   );
 }

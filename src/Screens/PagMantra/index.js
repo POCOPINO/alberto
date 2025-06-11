@@ -10,13 +10,13 @@ import styles from './styles'
 const playlist = [
   {
     id: '1',
-    title: 'Ja sei - Zimbra',
+    title: 'Mantra 1',
     audio: require('../../../assets/mantra1.mp3'),
     image: require('../../../assets/musica.png'),
   },
   {
     id: '2',
-    title: 'Será que é amor - Arlindo Cruz',
+    title: 'Mantra 2',
     audio: require('../../../assets/mantra2.mp3'),
     image: require('../../../assets/musica.png'),
   },

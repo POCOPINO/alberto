@@ -82,19 +82,20 @@ export default function InfoComidaScreen() {
         {loading && <ActivityIndicator size="large" color="#004f92" style={{ marginTop: 20 }} />}
 
         <FlatList
-          data={informacoes}
-          renderItem={renderItem}
-          keyExtractor={(item, index) => index.toString()}
-          contentContainerStyle={styles.listContainer}
-          keyboardShouldPersistTaps="handled"
-          ListEmptyComponent={
-            !loading && (
-              <Text style={styles.emptyText}>
-                Nenhuma informação encontrada. Tente outro alimento.
-              </Text>
-            )
-          }
-        />
+  data={informacoes}
+  renderItem={renderItem}
+  keyExtractor={(item, index) => index.toString()}
+  contentContainerStyle={[styles.listContainer, { marginTop: 30 }]}
+  keyboardShouldPersistTaps="handled"
+  ListEmptyComponent={
+    !loading && (
+      <Text style={styles.emptyText}>
+        Nenhuma informação encontrada. Tente outro alimento.
+      </Text>
+    )
+  }
+/>
+
       </View>
     </View>
   );

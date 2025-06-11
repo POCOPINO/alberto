@@ -1,7 +1,7 @@
 import { StyleSheet } from "react-native";
 
 export default StyleSheet.create({
-    containerPai: {
+  containerPai: {
     flex: 1,
     backgroundColor: '#f8f9fa',
   },
@@ -10,7 +10,7 @@ export default StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#f8f9fa',
     paddingHorizontal: 20,
-    marginTop:'5%',
+    marginTop: '5%',
   },
   card: {
     width: '100%',
@@ -48,38 +48,50 @@ export default StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+
+  // 🔄 Alterações no cardFruta
   cardFruta: {
-    width: '100%',
-    padding: 15,
+    width: '95%',
+    alignSelf: 'center',
+    padding: 20,
     borderRadius: 12,
     backgroundColor: '#fff',
-    marginBottom: 20,
+    marginBottom: 25,
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 3 },
     shadowOpacity: 0.1,
     shadowRadius: 6,
     elevation: 3,
   },
+
+  // 🔄 Imagem mais responsiva
   image: {
-    width: 100,
-    height: 100,
+    width: '60%',
+    height: undefined,
+    aspectRatio: 1,
     alignSelf: 'center',
-    marginBottom: 10,
+    marginBottom: 15,
     resizeMode: 'contain',
   },
+
+  // 🔄 Texto do card ajustado
   textCard: {
     textAlign: 'center',
-    marginBottom: 7,
+    marginBottom: 10,
     color: '#004f92',
     fontWeight: '600',
-    fontSize: 14,
+    fontSize: 16,
   },
+
+  // 🔄 Espaço extra entre o card de busca e os resultados
   listContainer: {
     paddingTop: 20,
     paddingBottom: 30,
     paddingHorizontal: 5,
     width: '100%',
+    marginTop: 30, // <--- Espaço extra adicionado
   },
+
   emptyText: {
     textAlign: 'center',
     color: '#999',

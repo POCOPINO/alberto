@@ -34,13 +34,13 @@ export default function Home() {
         { name: 'PagVacina', title: 'VACINAS', description: 'Verifique as vacinas que você deve tomar.', image: require('../../../assets/vacinaIcon.png') },
         { name: 'PagIMC', title: 'IMC', description: 'Calcule seu Índice de Massa Corporal.', image: require('../../../assets/imcIcon.png') },
         { name: 'PagNutricao', title: 'CALORIAS', description: 'Saiba mais sobre a contagem de calorias.', image: require('../../../assets/nutriIcon.png') },
-        { name: 'PagRemedio', title: 'MEDICAMENTOS', description: 'Saiba mais sobre suas medicações', image: require('../../../assets/padraoIcon.png') },
-        { name: 'PagMantra', title: 'SEUS MANTRAS', description: 'Mantras para você alcançar sua paz.', image: require('../../../assets/padraoIcon.png') },
-        { name: 'PagFrase', title: 'FRASE DO DIA', description: 'Veja uma frase para motivar o seu dia.', image: require('../../../assets/padraoIcon.png') },
-        { name: 'PagSono', title: 'DICAS DE SONO', description: 'Veja algumas dicas para pegar no sono.', image: require('../../../assets/padraoIcon.png') },
-        { name: 'PagPressao', title: 'PRESSÃO', description: 'Anote sua pressão diariamente.', image: require('../../../assets/padraoIcon.png') },
-        { name: 'PagGlicemia', title: 'GLICEMIA', description: 'Fique atento aos níveis de açúcar.', image: require('../../../assets/padraoIcon.png') },
-        { name: 'PagAgua', title: 'CONSUMO DE ÁGUA', description: 'Controle seu consumo de água diário.', image: require('../../../assets/padraoIcon.png') }
+        { name: 'PagRemedio', title: 'MEDICAMENTOS', description: 'Saiba mais sobre suas medicações', image: require('../../../assets/remedioIcon.png') },
+        { name: 'PagMantra', title: 'SEUS MANTRAS', description: 'Mantras para você alcançar sua paz.', image: require('../../../assets/mantraIcon.png') },
+        { name: 'PagFrase', title: 'FRASE DO DIA', description: 'Veja uma frase para motivar o seu dia.', image: require('../../../assets/diaIcon.png') },
+        { name: 'PagSono', title: 'DICAS DE SONO', description: 'Veja algumas dicas para pegar no sono.', image: require('../../../assets/sonoIcon.png') },
+        { name: 'PagPressao', title: 'PRESSÃO', description: 'Anote sua pressão diariamente.', image: require('../../../assets/pressaoIcon.png') },
+        { name: 'PagGlicemia', title: 'GLICEMIA', description: 'Fique atento aos níveis de açúcar.', image: require('../../../assets/glicemiaIcon.png') },
+        { name: 'PagAgua', title: 'CONSUMO DE ÁGUA', description: 'Controle seu consumo de água diário.', image: require('../../../assets/aguaIcon.png') }
     ];
 
     return (

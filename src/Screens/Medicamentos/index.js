@@ -25,10 +25,9 @@ export default function CadastroRemedio() {
   const [remedios, setRemedios] = useState([]);
   const [modalVisivel, setModalVisivel] = useState(false);
   const [remedioEditando, setRemedioEditando] = useState(null);
+  const [refreshData, setRefreshData] = useState(false);
 
   useEffect(() => {
-        
-    // Adicione esta função no seu componente (ela já é chamada mas não estava definida)
 const carregarMedicamentos = async () => {
   try {
     const response = await axios.post(`http://localhost:8000/api/medicamentos/select`);
@@ -39,12 +38,12 @@ const carregarMedicamentos = async () => {
     setRemedios(Array.isArray(dados) ? dados : []);
   } catch (erro) {
     console.error('Erro ao carregar medicamentos:', erro);
-    Alert.alert("Erro", "Não foi possível carregar os medicamentos.");
+    Alert.alert("efreshDataErro", "Não foi possível carregar os medicamentos.");
     setRemedios([]);
   }
 };
     carregarMedicamentos();
-  }, []);  
+  }, [refreshData]);  
   console.log(remedios)
   const selecionarImagem = async () => {
     try {
@@ -122,11 +121,11 @@ const carregarMedicamentos = async () => {
       };
 
       await axios.post('http://localhost:8000/api/medicamentos', formData, config);
+      setRefreshData(!refreshData); 
 
       setNomeRemedio("");
       setIntervalo("");
       setImagem(null);
-      await carregarMedicamentos();
 
       Alert.alert("Sucesso", "Medicamento cadastrado com sucesso!");
     } catch (error) {
@@ -145,8 +144,8 @@ const carregarMedicamentos = async () => {
 
   const deletarRemedio = async (id) => {
     try {
-      await axios.delete(`http://localhost:8000/api/medicamentos/deletar/${id}`);
-      await carregarMedicamentos();
+      await axios.post(`http://localhost:8000/api/medicamentos/deletar/${id}`);
+      setRefreshData(!refreshData); 
       Alert.alert("Sucesso", "Medicamento deletado com sucesso!");
     } catch (error) {
       console.error("Erro ao deletar medicamento:", error);
@@ -198,10 +197,9 @@ const carregarMedicamentos = async () => {
         }
       };
 
-      await axios.post(`http://localhost:8000/api/medicamentos/${remedioEditando.id}`, formData, config);
-
+      await axios.post(`http://localhost:8000/api/medicamentos/alterar/${remedioEditando.id}`, formData, config);
+      setRefreshData(!refreshData); 
       fecharModalEdicao();
-      await carregarMedicamentos();
       Alert.alert("Sucesso", "Medicamento atualizado com sucesso!");
     } catch (error) {
       console.error("Erro ao atualizar medicamento:", error);
@@ -217,16 +215,6 @@ const carregarMedicamentos = async () => {
     }
   };
 
-  const confirmarDelecao = (id) => {
-    Alert.alert(
-      "Confirmar Exclusão",
-      "Tem certeza que deseja excluir este medicamento?",
-      [
-        { text: "Cancelar", style: "cancel" },
-        { text: "Excluir", onPress: () => deletarRemedio(id) }
-      ]
-    );
-  };
 
   const renderItem = ({ item }) => (
     <View style={styles.card}>
@@ -239,7 +227,7 @@ const carregarMedicamentos = async () => {
       <View style={styles.cardInfo}>
         <View>
           <Text style={styles.cardTitulo}>{item.nomeRemedio}</Text>
-          <Text>Intervalo: {item.intervalo} horas</Text>
+          <Text style={{marginBottom: 10}}>Intervalo: {item.intervalo} horas</Text>
         </View>
         <View style={styles.cardBotoes}>
           <TouchableOpacity
@@ -251,7 +239,7 @@ const carregarMedicamentos = async () => {
           </TouchableOpacity>
           <TouchableOpacity
             style={styles.botaoDeletar}
-            onPress={() => confirmarDelecao(item.id)}
+            onPress={() => deletarRemedio(item.id)}
           >
             <Ionicons name="trash" size={16} color="#fff" />
             <Text style={styles.textoBotao}>Deletar</Text>

@@ -40,7 +40,6 @@ export default function Home() {
         { name: 'PagSono', title: 'DICAS DE SONO', description: 'Veja algumas dicas para pegar no sono.', image: require('../../../assets/padraoIcon.png') },
         { name: 'PagPressao', title: 'PRESSÃO', description: 'Anote sua pressão diariamente.', image: require('../../../assets/padraoIcon.png') },
         { name: 'PagGlicemia', title: 'GLICEMIA', description: 'Fique atento aos níveis de açúcar.', image: require('../../../assets/padraoIcon.png') },
-        { name: 'PagLocal', title: 'CLÍNICAS PRÓXIMAS', description: 'Clínicas einstein mais próximas de você.', image: require('../../../assets/padraoIcon.png') },
         { name: 'PagAgua', title: 'CONSUMO DE ÁGUA', description: 'Controle seu consumo de água diário.', image: require('../../../assets/padraoIcon.png') }
     ];
 

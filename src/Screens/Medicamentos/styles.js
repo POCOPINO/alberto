@@ -111,7 +111,7 @@ export default StyleSheet.create({
   },
   botaoEditar: {
     flexDirection: 'row',
-    backgroundColor: '#007bff',
+    backgroundColor: '#004f92',
     paddingVertical: 6,
     paddingHorizontal: 12,
     borderRadius: 6,

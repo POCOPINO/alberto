@@ -6,6 +6,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import styles from './styles';
 import Header from '../../Components/Header';
 import * as ImagePicker from 'expo-image-picker';
+import { MaskedTextInput } from 'react-native-mask-text';
 
 
 
@@ -181,7 +182,7 @@ export default function MeuPerfil() {
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.title}>Editarx</Text>
+            <Text style={styles.title}>Editar</Text>
             <TextInput
               value={valorAtual}
               onChangeText={setValorAtual}

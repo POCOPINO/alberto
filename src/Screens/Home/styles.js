@@ -93,4 +93,5 @@ export default StyleSheet.create({
         marginRight: 10,
         resizeMode: 'contain',
     },
+    
 });
